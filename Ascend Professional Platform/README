@@ -1,0 +1,93 @@
+🎓 AI-Powered E-Learning Platform
+
+A modern AI-driven e-learning platform built for B.Tech engineering students.
+This project provides personalized learning paths, coding practice, AI tutoring, and progress tracking — designed to help students learn smarter and faster.
+
+🚀 Features
+
+🤖 AI Tutor – Ask questions anytime with instant responses.
+
+📚 Smart Recommendations – Personalized courses and resources.
+
+🧑‍💻 Code Playground – Run and test code with real-time feedback.
+
+📊 Progress Tracking – Visual dashboards for performance insights.
+
+📝 Exam Prep Mode – AI-powered quizzes and mock tests.
+
+🛠 Tech Stack
+
+Frontend: HTML, CSS, JavaScript, Tailwind CSS / React
+
+Backend: Node.js, Express.js
+
+Database: MongoDB / MySQL
+
+AI/ML Integration: OpenAI / TensorFlow / HuggingFace Models
+
+Deployment: Docker + Cloud (AWS / Vercel / Heroku)
+
+📂 Project Structure
+ai-elearning-platform/
+│
+├── frontend/        # UI (HTML, CSS, JS, React components)
+├── backend/         # API and server logic (Node.js, Express)
+├── database/        # Schema and seed data
+├── assets/          # Images, icons, static files
+├── docs/            # Documentation, diagrams
+├── LICENSE
+└── README.md
+
+⚡ Getting Started
+1️⃣ Prerequisites
+
+Node.js (>= 18.x)
+
+npm or yarn
+
+MongoDB / MySQL installed
+
+2️⃣ Clone the Repository
+git clone https://github.com/vinitchoudhary/ai-elearning-platform.git
+cd ai-elearning-platform
+
+3️⃣ Install Dependencies
+npm install
+
+4️⃣ Run the Project
+
+Start the backend:
+
+npm run server
+
+
+Start the frontend:
+
+npm run client
+
+
+Open in your browser:
+👉 http://localhost:5000
+
+📜 License
+
+This project is licensed under the MIT License.
+See the LICENSE
+ file for details.
+
+🤝 Contributing
+
+Contributions are welcome!
+
+Fork the repo
+
+Create a new branch (feature/new-feature)
+
+Commit changes
+
+Submit a Pull Request 🚀
+
+👨‍💻 Author
+
+Vinit Choudhary
+📧 Email: vinitchoudharyji11@gmail.com

@@ -1,0 +1,181 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, OAuthProvider } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, setLogLevel, doc, onSnapshot, collection, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+// --- GLOBAL ENVIRONMENT VARIABLES (MANDATORY) ---
+const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+// --- GLOBAL STATE ---
+window.globalData = {
+    isAuthReady: false,
+    userId: null,
+    profile: {},
+    moduleProgress: [],
+    publicModules: [],
+    resources: [],
+    problems: [],
+    skillMetrics: {} // For radar chart
+};
+
+window.firebaseApp = null;
+window.auth = null;
+window.db = null;
+
+/**
+ * Shows a custom message box instead of alert() or confirm().
+ * NOTE: This requires a DOM element with ID 'message-box' in your HTML.
+ */
+window.showMessageBox = (title, message, isError) => {
+    const box = document.getElementById('message-box');
+    if (!box) {
+        console.error("Message Box not found. Message:", message);
+        return;
+    }
+    const color = isError ? 'bg-red-500' : 'bg-green-500';
+    box.className = `fixed bottom-4 right-4 p-4 rounded-lg text-white shadow-xl z-50 transition-all duration-300 ${color}`;
+    box.innerHTML = `<p class="font-bold">${title}</p><p class="text-sm">${message}</p>`;
+    box.classList.remove('opacity-0', 'pointer-events-none');
+    box.classList.add('opacity-100');
+    setTimeout(() => {
+        box.classList.add('opacity-0', 'pointer-events-none');
+    }, 4000);
+};
+
+
+/**
+ * Initializes Firebase, attempts sign-in, and sets up the auth listener.
+ */
+async function initializeFirebase() {
+    // Optional: setLogLevel('Debug');
+    if (Object.keys(firebaseConfig).length === 0) {
+        window.showMessageBox('Warning', 'Firebase config missing. Running in mock mode.', true);
+        window.setPage('login');
+        return;
+    }
+
+    try {
+        window.firebaseApp = initializeApp(firebaseConfig);
+        window.auth = getAuth(window.firebaseApp);
+        window.db = getFirestore(window.firebaseApp);
+
+        // --- AUTHENTICATION LISTENER ---
+        onAuthStateChanged(window.auth, async (user) => {
+            if (user) {
+                window.globalData.userId = user.uid;
+                window.globalData.isAuthReady = true;
+                console.log("User signed in. UID:", user.uid);
+                // Load data after successful sign-in
+                loadRealTimeData(user.uid);
+                window.setPage('dashboard');
+            } else {
+                // If not signed in, attempt silent authentication
+                try {
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(window.auth, initialAuthToken);
+                    } else {
+                        // Fallback to anonymous sign-in if no token is available
+                        await signInAnonymously(window.auth);
+                    }
+                } catch (error) {
+                    console.warn("Silent Auth Error. Proceeding to login:", error);
+                    window.globalData.isAuthReady = true;
+                    window.globalData.userId = crypto.randomUUID(); // Mock UID for unauthenticated state
+                    window.setPage('login'); // Show login screen if all else fails
+                }
+            }
+        });
+
+    } catch (e) {
+        window.showMessageBox('Fatal Error', 'Firebase initialization failed. Check config.', true);
+        window.setPage('login');
+    }
+}
+
+/**
+ * Attaches real-time listeners based on the Firestore Schema.
+ * @param {string} userId - The current user's UID.
+ */
+function loadRealTimeData(userId) {
+    if (!window.db || !userId) return;
+
+    const privatePath = `/artifacts/${appId}/users/${userId}`;
+    const publicPath = `/artifacts/${appId}/public/data`;
+
+    // 1. Private Profile Data (Single Document)
+    onSnapshot(doc(window.db, privatePath, 'profile', 'user_data'), (docSnapshot) => {
+        window.globalData.profile = docSnapshot.exists() ? docSnapshot.data() : { name: "New User", overallProgress: 0, currentLevel: "Beginner" };
+        console.log("Profile data loaded/updated.");
+        // Assuming your main app render function is named 'renderApp'
+        window.renderApp();
+    });
+
+    // 2. Private Collections (Module Progress, Submissions, Interviews)
+    onSnapshot(collection(window.db, privatePath, 'module_progress'), (snapshot) => {
+        window.globalData.moduleProgress = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log("Module progress loaded/updated.");
+        window.renderApp();
+    });
+
+    onSnapshot(collection(window.db, privatePath, 'skill_metrics'), (snapshot) => {
+        window.globalData.skillMetrics = snapshot.docs.reduce((acc, doc) => {
+            acc[doc.data().skill] = doc.data().proficiency;
+            return acc;
+        }, {});
+        console.log("Skill metrics loaded/updated.");
+        window.renderApp();
+    });
+
+    // 3. Public Collections (Modules, Resources, Problems)
+    onSnapshot(collection(window.db, publicPath, 'modules'), (snapshot) => {
+        window.globalData.publicModules = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log("Public modules loaded/updated.");
+        window.renderApp();
+    });
+
+    onSnapshot(collection(window.db, publicPath, 'resources'), (snapshot) => {
+        window.globalData.resources = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log("Public resources loaded/updated.");
+        window.renderApp();
+    });
+
+    onSnapshot(collection(window.db, publicPath, 'problems'), (snapshot) => {
+        window.globalData.problems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log("Public problems loaded/updated.");
+        window.renderApp();
+    });
+}
+
+
+/**
+ * Handles social sign-in using Firebase Popups.
+ */
+window.handleSocialSignIn = async (platform) => {
+    if (!window.auth) return window.showMessageBox('Error', 'App is not ready. Try again.', true);
+
+    let provider;
+    // Map platform string to Firebase provider instance
+    if (platform === 'Google') {
+        provider = new GoogleAuthProvider();
+    } else if (platform === 'Github') {
+        provider = new GithubAuthProvider();
+    } else if (platform === 'LinkedIn') {
+        // LinkedIn uses the standard OAuthProvider setup
+        provider = new OAuthProvider('linkedin.com');
+        // You might need to set scopes or custom parameters here if using a real LinkedIn app
+    } else {
+        return;
+    }
+
+    try {
+        await signInWithPopup(window.auth, provider);
+        window.showMessageBox('Success', `Signed in with ${platform}!`, false);
+    } catch (error) {
+        console.error("Social Sign-in Error:", error);
+        window.showMessageBox('Sign In Failed', error.message || 'Please check console for details.', true);
+    }
+};
+
+// Export the main initialization function
+window.initializeFirebase = initializeFirebase;

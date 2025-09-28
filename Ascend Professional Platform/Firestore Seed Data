@@ -1,0 +1,103 @@
+// Global App ID for pathing
+const APP_ID = 'example-app-id'; // Replace with window.__app_id
+
+// --- PUBLIC DATA (For /artifacts/{appId}/public/data/...) ---
+
+const PUBLIC_MODULES = [
+    {
+        moduleId: "DSA-001",
+        name: "Data Structures & Algorithms",
+        description: "Master all competitive programming fundamentals.",
+        order: 1,
+        icon: "book",
+    },
+    {
+        moduleId: "OS-002",
+        name: "Operating Systems Basics",
+        description: "Core concepts of process management and concurrency.",
+        order: 2,
+        icon: "cpu",
+    },
+    {
+        moduleId: "DBMS-003",
+        name: "Database Systems and SQL",
+        description: "Relational algebra, normalization, and advanced querying.",
+        order: 3,
+        icon: "database",
+    }
+];
+
+const PUBLIC_PROBLEMS = [
+    {
+        problemId: "P-101",
+        title: "Two Sum",
+        description: "Find two numbers in an array that add up to a target.",
+        difficulty: "Easy",
+        topic: "Arrays, HashMaps",
+        testCases: JSON.stringify([{input: "[2, 7, 11, 15], 9", output: "[0, 1]"}]),
+        solutionTemplate: "function twoSum(nums, target) {}"
+    },
+    {
+        problemId: "P-205",
+        title: "Longest Increasing Subsequence",
+        description: "Find the length of the longest strictly increasing subsequence.",
+        difficulty: "Medium",
+        topic: "Dynamic Programming",
+        testCases: JSON.stringify([{input: "[10, 9, 2, 5, 3, 7, 101, 18]", output: "4"}]),
+        solutionTemplate: "function lengthOfLIS(nums) {}"
+    }
+];
+
+const PUBLIC_RESOURCES = [
+    {
+        resourceId: "R-G4G",
+        title: "GeeksforGeeks Practice",
+        url: "https://www.geeksforgeeks.org/",
+        category: "Coding",
+        description: "A comprehensive resource for CS concepts and problems."
+    },
+    {
+        resourceId: "R-LC",
+        title: "LeetCode Daily Challenge",
+        url: "https://leetcode.com/problemset/all/",
+        category: "Coding",
+        description: "Daily problems to keep your skills sharp."
+    }
+];
+
+// --- PRIVATE DATA (For /artifacts/{appId}/users/{userId}/...) ---
+// Use this structure when creating documents inside the user's subcollections.
+
+const EXAMPLE_USER_PROFILE = {
+    name: "Alex Johnson",
+    email: "alex@ascend.com",
+    title: "Rising Tech Analyst",
+    overallProgress: 75,
+    currentLevel: "Advanced Coder",
+    analytics: {
+        totalHours: 155,
+        solvedProblems: 120,
+        avgAccuracy: 0.85
+    }
+};
+
+const EXAMPLE_MODULE_PROGRESS = [
+    { moduleId: "DSA-001", progress: 85, status: "Active", lastAccessed: new Date().toISOString() },
+    { moduleId: "DBMS-003", progress: 10, status: "Pending", lastAccessed: new Date().toISOString() }
+];
+
+const EXAMPLE_SKILL_METRICS = [
+    { skill: "Coding", proficiency: 90, lastUpdated: new Date().toISOString() },
+    { skill: "Problem Solving", proficiency: 80, lastUpdated: new Date().toISOString() },
+    { skill: "Communication", proficiency: 65, lastUpdated: new Date().toISOString() },
+    { skill: "System Design", proficiency: 50, lastUpdated: new Date().toISOString() }
+];
+
+// Exporting the data for external use (e.g., in a seeding script)
+// Note: This block is usually for Node.js/tools, but provided here for clarity.
+/*
+export {
+    PUBLIC_MODULES, PUBLIC_PROBLEMS, PUBLIC_RESOURCES,
+    EXAMPLE_USER_PROFILE, EXAMPLE_MODULE_PROGRESS, EXAMPLE_SKILL_METRICS
+};
+*/

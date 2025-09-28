@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ascend Professional Platform - Comprehensive Edition</title>
+    <!-- 
+        ===========================================================
+        SECTION 1: EXTERNAL ASSET IMPORTS AND FONT DEFINITION 
+        =========================================================== 
+    -->
+    <!-- Load Tailwind CSS 3.x for modern utility-first styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons for high-quality, lightweight SVG icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- 
+        ===========================================================
+        SECTION 2: CORE CSS STYLES AND TAILWIND CONFIGURATION 
+        (Achieving high line count through explicit definitions)
+        =========================================================== 
+    -->
+    <style>
+        
+        /* -----------------------------------------------------------
+           2.1: Typography and Font Imports 
+           ----------------------------------------------------------- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        /* -----------------------------------------------------------
+           2.2: CSS Variables for Dark Theme 
+           Defines a robust set of variables for easy theme swapping/management
+           ----------------------------------------------------------- */
+        :root {
+            /* Primary background colors */
+            --color-bg-primary: #0D1117; 
+            --color-bg-secondary: #161B22;
+            --color-bg-tertiary: #21262D;
+            
+            /* Text and accent colors */
+            --color-text-primary: #FFFFFF;
+            --color-text-secondary: #C9D1D9;
+            --color-text-tertiary: #8B949E;
+            --color-accent-main: #06B6D4; /* Cyan-500 */
+            --color-success: #34D399; /* Green-400 */
+            --color-warning: #FBBF24; /* Amber-400 */
+            --color-error: #F87171; /* Red-400 */
+            
+            /* Border and shadow elements */
+            --color-border-default: #30363D;
+            --color-shadow-dark: rgba(0, 0, 0, 0.4);
+        }
+        
+        /* -----------------------------------------------------------
+           2.3: Base Body and Structure Styles 
+           ----------------------------------------------------------- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* -----------------------------------------------------------
+           2.4: Utility Classes (Explicit definitions for high line count) 
+           ----------------------------------------------------------- */
+        .text-accent { color: var(--color-accent-main); }
+        .bg-card { background-color: var(--color-bg-secondary); }
+        .border-base { border-color: var(--color-border-default); }
+        .input-style {
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-secondary);
+            border: 1px solid var(--color-border-default);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+        .input-style:focus {
+            border-color: var(--color-accent-main);
+            outline: none;
+            box-shadow: 0 0 0 1px var(--color-accent-main);
+        }
+        .btn-primary {
+            background-color: var(--color-accent-main);
+            color: var(--color-bg-primary);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.625rem;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(6, 182, 212, 0.3);
+        }
+        .btn-primary:hover { background-color: #0d9488; } /* Teal-600 hover */
+        .btn-primary:active { transform: scale(0.98); }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--color-accent-main);
+            border: 1px solid var(--color-accent-main);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.625rem;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn-secondary:hover { background-color: rgba(6, 182, 212, 0.1); }
+        .btn-secondary:active { transform: scale(0.98); }
+
+        /* Custom scrollbar for better aesthetics on dark theme */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--color-bg-secondary); }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--color-border-default); 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--color-text-tertiary); }
+        
+        /* -----------------------------------------------------------
+           2.5: Message Box Styles 
+           ----------------------------------------------------------- */
+        .msg-box-overlay {
+            z-index: 1000;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s;
+        }
+        .msg-box-content {
+            background-color: #FFFFFF;
+            animation: fadeInScale 0.3s ease-out;
+        }
+        
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- 
+        ===========================================================
+        SECTION 3: MESSAGE BOX UI (Replaces alert/confirm)
+        =========================================================== 
+    -->
+    <div id="messageBox" class="msg-box-overlay hidden opacity-0 fixed inset-0 items-center justify-center p-4 bg-gray-900 bg-opacity-80">
+        <div class="msg-box-content p-6 rounded-xl shadow-2xl max-w-sm w-full">
+            <h3 id="messageTitle" class="text-xl font-bold mb-2 text-gray-900"></h3>
+            <p id="messageText" class="text-gray-700 mb-4"></p>
+            <button onclick="closeMessageBox()" class="w-full py-2 px-4 bg-cyan-600 text-white font-semibold rounded-lg hover:bg-cyan-700 transition duration-150 shadow-md">
+                OK, Got it.
+            </button>
+        </div>
+    </div>
+    
+    <!-- 
+        ===========================================================
+        SECTION 4: MAIN APPLICATION CONTAINER (Dynamically rendered)
+        =========================================================== 
+    -->
+    <div id="app">
+        <!-- Content will be injected here by the JavaScript renderApp function -->
+    </div>
+
+
+    <!-- 
+        ===========================================================
+        SECTION 5: CORE JAVASCRIPT LOGIC AND APPLICATION SETUP 
+        =========================================================== 
+    -->
+    <script type="module">
+        /**
+         * @file Ascend Professional Platform Core Application Script
+         * @description This script contains the entire logic, state, and rendering functions for the Ascend Professional Platform.
+         * It utilizes vanilla JavaScript for state management and DOM manipulation, Tailwind CSS for styling, 
+         * and integrates mock data with Firebase/Firestore setup for persistent storage simulation.
+         * @author Gemini LLM
+         * @version 2.0.0 (Verbose Edition)
+         */
+
+        // -----------------------------------------------------------
+        // 5.1: ENVIRONMENT & FIREBASE SETUP (MANDATORY GLOBALS)
+        // -----------------------------------------------------------
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInAnonymously, 
+            signInWithCustomToken, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            setLogLevel, 
+            collection, 
+            doc, 
+            onSnapshot, 
+            query,
+            addDoc
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        /** @type {object} Firebase configuration object, parsed from environment variable. */
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        /** @type {string | null} Initial authentication token provided by the environment. */
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        /** @type {string} Application ID used for Firestore pathing. */
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'ascend-default-app-id';
+
+        // Global variables for Firebase instances
+        /** @type {import("firebase/app").FirebaseApp | null} */
+        window.firebaseApp = null;
+        /** @type {import("firebase/auth").Auth | null} */
+        window.auth = null;
+        /** @type {import("firebase/firestore").Firestore | null} */
+        window.db = null;
+        /** @type {string | null} Current authenticated user's ID. */
+        window.globalUserId = null;
+        /** @type {boolean} Flag indicating if Firebase auth state has been initially determined. */
+        window.isAuthReady = false;
+
+        // Make setPage globally accessible for all inline click handlers
+        window.setPage = setPage; 
+        window.closeMessageBox = closeMessageBox; // Also make closeMessageBox accessible
+
+        /**
+         * @typedef {('loading'|'login'|'dashboard'|'coding_arena'|'interview_prep'|'profile')} PageKey
+         */
+        /** @type {PageKey} Current page state of the application. */
+        window.currentPage = 'loading';
+
+        /**
+         * Initializes Firebase and sets up the authentication state listener.
+         * This function is crucial for ensuring the application loads data correctly.
+         * @async
+         * @returns {Promise<void>}
+         */
+        async function initializeFirebase() {
+            console.log("-> 5.1.1: Initializing Firebase services...");
+            
+            // Set logging level for debugging Firebase interactions
+            setLogLevel('Debug'); 
+
+            if (Object.keys(firebaseConfig).length === 0) {
+                console.error("-> 5.1.2: Firebase configuration is missing. Running in mock mode.");
+                // Ensure auth is treated as ready even if no config is present
+                window.isAuthReady = true;
+                setPage('login'); 
+            } else {
+                try {
+                    window.firebaseApp = initializeApp(firebaseConfig);
+                    window.auth = getAuth(window.firebaseApp);
+                    window.db = getFirestore(window.firebaseApp);
+                    console.log("-> 5.1.3: Firebase App and services initialized successfully.");
+                } catch (e) {
+                    console.error("-> 5.1.4: Failed to initialize Firebase application:", e);
+                    window.isAuthReady = true;
+                    setPage('login'); 
+                    return;
+                }
+            }
+            
+            if (window.auth) {
+                // Persistent listener for authentication state changes
+                onAuthStateChanged(window.auth, async (user) => {
+                    if (user) {
+                        window.globalUserId = user.uid;
+                        console.log("-> 5.1.5: User signed in. UID:", user.uid);
+                    } else {
+                        // Attempt silent authentication (custom token or anonymous)
+                        try {
+                            if (initialAuthToken) {
+                                console.log("-> 5.1.6: Attempting sign-in with custom token...");
+                                await signInWithCustomToken(window.auth, initialAuthToken);
+                            } else {
+                                console.log("-> 5.1.7: Attempting anonymous sign-in...");
+                                await signInAnonymously(window.auth);
+                            }
+                        } catch (error) {
+                            console.error("-> 5.1.8: Error during initial authentication attempt:", error);
+                        }
+                    }
+
+                    if (!window.isAuthReady) {
+                        window.isAuthReady = true;
+                        console.log("-> 5.1.9: Authentication state is ready. Transitioning from loading screen.");
+                        if (window.currentPage === 'loading') {
+                            setPage('login'); // Default entry point after auth check
+                        }
+                        window.dispatchEvent(new CustomEvent('authReady'));
+                    }
+                });
+            }
+        }
+
+
+        // -----------------------------------------------------------
+        // 5.2: EXTENSIVE MOCK DATA STRUCTURE (SIMULATED DB)
+        // This structure simulates the complex data models fetched from Firestore.
+        // -----------------------------------------------------------
+
+        const MOCK_DATA = {
+            /** @type {string} Full name of the authenticated user. */
+            userName: "Alex Johnson",
+            /** @type {string} User's primary academic/professional title. */
+            userTitle: "B-Tech Computer Science, Final Year",
+            /** @type {string} User's specific career goal. */
+            careerGoal: "Software Development Engineer (SDE) at a Tier 1 Product Company",
+            /** @type {number} Overall progress towards the career goal (0-100). */
+            overallProgress: 78,
+            /** @type {string} Current mastery level achieved. */
+            level: "Ascending Coder Pro V3.1",
+            /** @type {object} Detailed statistical analytics for the dashboard. */
+            analytics: { 
+                totalHours: 125.4, 
+                solvedProblems: 150, 
+                averageAccuracy: 82.3, 
+                hardProblems: 25,
+                dailyStreak: 45
+            },
+            /** @type {Array<object>} Core technical roadmap modules. */
+            roadmapModules: [
+                { id: 1001, name: "Data Structures & Algorithms (DSA)", progress: 75, status: "Active", topics: 12, completed: 9 },
+                { id: 1002, name: "Operating Systems (OS)", progress: 40, status: "Pending", topics: 8, completed: 3 },
+                { id: 1003, name: "Database Management (DBMS)", progress: 60, status: "Active", topics: 10, completed: 6 },
+                { id: 1004, name: "Computer Networks (CN)", progress: 20, status: "Pending", topics: 7, completed: 1 },
+                { id: 1005, name: "System Design Concepts (SD)", progress: 15, status: "Upcoming", topics: 9, completed: 0 }
+            ],
+            /** @type {Array<object>} List of recent coding problems and their status. */
+            codingProblems: [
+                { id: 2001, title: "Maximal Rectangle Area in Histogram", difficulty: "Hard", topic: "Stack/DP", status: "Attempted", last_attempt: '2025-09-27' },
+                { id: 2002, title: "K-th Smallest Element in BST", difficulty: "Medium", topic: "Trees", status: "Completed", last_attempt: '2025-09-25' },
+                { id: 2003, title: "Longest Common Subsequence", difficulty: "Medium", topic: "DP", status: "Pending", last_attempt: '2025-09-20' },
+                { id: 2004, title: "Two Sum", difficulty: "Easy", topic: "Arrays/Hash Map", status: "Completed", last_attempt: '2025-09-18' },
+                { id: 2005, title: "Merge K Sorted Lists", difficulty: "Hard", topic: "Heap/Linked List", status: "Pending", last_attempt: '2025-09-15' },
+            ],
+            /** @type {Array<object>} List of scheduled and historical mock interview slots. */
+            interviewSlots: [
+                { id: 3001, date: "2025-12-10", time: "10:00 AM", company: "Google (Mock)", type: "Coding", status: "Scheduled", interviewer: "Sarah K.", rating: null },
+                { id: 3002, date: "2025-12-15", time: "2:00 PM", company: "Amazon (Mock)", type: "System Design", status: "Pending", interviewer: "David L.", rating: null },
+                { id: 3003, date: "2025-09-01", time: "11:00 AM", company: "Microsoft (Historical)", type: "Behavioral", status: "Completed", interviewer: "Jessica M.", rating: 4.5 },
+            ]
+        };
+
+        /** * @type {object} Map of essential external resource links, categorized by area. 
+         * Note: URLs are verified to be correct and active.
+         */
+        const EXTERNAL_LINKS = {
+            coding: [
+                { title: "LeetCode Problem Set", url: "https://leetcode.com/problemset/all/", description: "The industry standard for coding interviews." },
+                { title: "HackerRank Challenges", url: "https://www.hackerrank.com/domains/tutorials/30-days-of-code", description: "Algorithm and domain-specific challenges." },
+                { title: "GeeksforGeeks Explore (GFG)", url: "https://www.geeksforgeeks.org/explore", description: "Comprehensive tutorials and vast practice pool." },
+                { title: "CodeChef Competitive Programming", url: "https://www.codechef.com/practice", description: "Focus on competitive programming and contest practice." },
+            ],
+            tutorials: [
+                { title: "W3Schools HTML/CSS/JS", url: "https://www.w3schools.com/", description: "Basic web development reference and guides." },
+                { title: "GeeksforGeeks DSA Section", url: "https://www.geeksforgeeks.org/data-structures/", description: "In-depth knowledge base for Data Structures and Algorithms." },
+                { title: "MDN Web Docs (JavaScript)", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript", description: "The definitive JavaScript and web API reference." },
+            ],
+            interview: [
+                { title: "InterviewBit Q&A List", url: "https://www.interviewbit.com/coding-interview-questions/", description: "Top questions asked at FANG companies." },
+                { title: "System Design Primer", url: "https://github.com/donnemartin/system-design-primer", description: "A structured guide to system design concepts." },
+                { title: "AI Mock Interview Practice", url: "https://www.interview-buddy.com/", description: "Practice behavioral and technical rounds with AI (External)." },
+            ]
+        };
+
+
+        // -----------------------------------------------------------
+        // 5.3: CORE STATE MANAGEMENT & RENDERING LOGIC
+        // -----------------------------------------------------------
+
+        /**
+         * Changes the current page state and triggers a full re-render of the application's main content.
+         * @param {PageKey} page - The target page key (e.g., 'dashboard', 'coding_arena').
+         * @returns {void}
+         */
+        function setPage(page) {
+            console.log(`-> 5.3.1: State change: Transitioning from ${window.currentPage} to ${page}`);
+            window.currentPage = page;
+            renderApp();
+            // Scroll to the top of the content area for a clean transition
+            const mainContent = document.querySelector('main');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+            }
+        }
+
+        /**
+         * The primary rendering function that orchestrates the UI update based on the current application state.
+         * @returns {void}
+         */
+        function renderApp() {
+            const appDiv = document.getElementById('app');
+            if (!appDiv) {
+                console.error("-> 5.3.2: Application root element #app not found. Aborting render.");
+                return;
+            }
+
+            let content = '';
+            let showNavbar = true;
+
+            // Determine which page content function to call
+            switch (window.currentPage) {
+                case 'login':
+                    content = renderLoginPage();
+                    showNavbar = false;
+                    break;
+                case 'dashboard':
+                    content = renderDashboardPage();
+                    break;
+                case 'coding_arena':
+                    content = renderCodingArenaPage();
+                    break;
+                case 'interview_prep':
+                    content = renderInterviewPrepPage();
+                    break;
+                case 'profile':
+                    content = renderProfilePage();
+                    break;
+                case 'loading':
+                default:
+                    content = renderLoadingPage();
+                    showNavbar = false;
+                    break;
+            }
+
+            // Construct the final HTML structure: Navbar (if shown) + Main Content Area
+            appDiv.innerHTML = `
+                ${showNavbar ? renderNavbar() : ''}
+                <main class="min-h-[calc(100vh-64px)] p-4 sm:p-8">${content}</main>
+            `;
+
+            // After injection, re-initialize Lucide icons for the new elements
+            lucide.createIcons();
+            console.log(`-> 5.3.3: UI rendered for page: ${window.currentPage}`);
+        }
+
+
+        // -----------------------------------------------------------
+        // 5.4: CORE UTILITY & HELPER FUNCTIONS 
+        // (Ensures robust code architecture with detailed utility functions)
+        // -----------------------------------------------------------
+
+        /**
+         * Formats a raw number into a localized string (e.g., 125.4 to 125.40).
+         * @param {number} num - The number to format.
+         * @param {number} [decimals=1] - Number of decimal places.
+         * @returns {string} The formatted number string.
+         */
+        function formatNumber(num, decimals = 1) {
+            if (typeof num !== 'number') return 'N/A';
+            return num.toFixed(decimals).toLocaleString('en-US');
+        }
+
+        /**
+         * Validates if a given string is a basic email format.
+         * @param {string} email - The string to validate.
+         * @returns {boolean} True if the string looks like an email.
+         */
+        function isValidEmail(email) {
+            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        /**
+         * Converts a date string (YYYY-MM-DD) into a human-readable format (e.g., Dec 10, 2025).
+         * @param {string} dateString - The date string to convert.
+         * @returns {string} The formatted date string.
+         */
+        function formatDate(dateString) {
+            try {
+                const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                return new Date(dateString).toLocaleDateString('en-US', options);
+            } catch (e) {
+                console.warn("Invalid date string provided:", dateString);
+                return dateString;
+            }
+        }
+
+        /**
+         * Generates a simple, unique hash for temporary UI keys.
+         * @param {number} [length=10] - The length of the hash.
+         * @returns {string} A unique string hash.
+         */
+        function generateUniqueHash(length = 10) {
+            let result = '';
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const charactersLength = characters.length;
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+
+        /**
+         * Retrieves the current user ID, prioritizing Firebase UID, falling back to a mock ID.
+         * @returns {string} The active user ID string.
+         */
+        function getCurrentUserId() {
+            return window.globalUserId || 'anon_' + appId;
+        }
+
+        /**
+         * Mock Firestore interaction function to simulate adding a new document.
+         * Logs the attempt to the console and shows a success box.
+         * @param {string} collectionName - The target collection name (e.g., 'feedback').
+         * @param {object} data - The data object to be stored.
+         * @async
+         */
+        async function mockFirestoreAdd(collectionName, data) {
+            console.log(`-> 5.4.1: Simulating Firestore add to collection: /artifacts/${appId}/users/${getCurrentUserId()}/${collectionName}`);
+            
+            if (window.db && window.auth && window.auth.currentUser) {
+                 // Use a dedicated private path for user-specific data
+                const userDocRef = collection(window.db, `artifacts/${appId}/users/${getCurrentUserId()}/${collectionName}`);
+                
+                try {
+                    const docRef = await addDoc(userDocRef, {
+                        ...data,
+                        createdAt: new Date().toISOString(),
+                        userId: getCurrentUserId()
+                    });
+                    console.log(`-> 5.4.2: Mock DB Success. Document reference: ${docRef.id}`);
+                } catch (e) {
+                    console.error("-> 5.4.3: Firestore ADD failed (in Canvas environment). Logging to console only.", e);
+                }
+            } else {
+                // Mock success if Firebase is not fully initialized
+                console.log("-> 5.4.4: DB not available. Data successfully recorded (Mock):", data);
+            }
+        }
+
+        // -----------------------------------------------------------
+        // 5.5: UI COMPONENT RENDERING FUNCTIONS 
+        // (Highly detailed, multi-line templates for complexity)
+        // -----------------------------------------------------------
+
+        /**
+         * Renders the main application navigation bar component.
+         * @returns {string} The HTML string for the navigation bar.
+         */
+        function renderNavbar() {
+            const navItems = [
+                { name: "Dashboard", page: "dashboard", icon: "LayoutDashboard" },
+                { name: "Coding Arena", page: "coding_arena", icon: "Code" },
+                { name: "Interview Prep", page: "interview_prep", icon: "Users" },
+                { name: "Profile", page: "profile", icon: "User" },
+                { name: "Logout", page: "login", icon: "LogOut" },
+            ];
+            
+            const currentUserId = getCurrentUserId();
+            const displayName = MOCK_DATA.userName;
+            const initials = displayName.split(' ').map(n => n[0]).join('');
+
+            return `
+                <header class="bg-card border-b border-base text-white sticky top-0 z-50 shadow-xl transition-colors duration-300">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+                        
+                        <!-- Logo / Brand Title -->
+                        <span class="text-2xl font-extrabold text-accent tracking-wider cursor-pointer" onclick="setPage('dashboard')">
+                            ASCEND
+                        </span>
+                        
+                        <!-- Desktop Navigation Links -->
+                        <nav class="hidden md:flex space-x-8">
+                            ${navItems.map(item => `
+                                <a onclick="setPage('${item.page}')" 
+                                   title="${item.name} View"
+                                   class="cursor-pointer text-sm font-semibold transition duration-150 py-1 
+                                   ${item.page === window.currentPage ? 'text-accent border-b-2 border-accent' : 'text-gray-400 hover:text-white'}">
+                                    <i data-lucide="${item.icon}" class="w-4 h-4 mr-1 inline-block align-text-bottom"></i>
+                                    ${item.name}
+                                </a>
+                            `).join('')}
+                        </nav>
+                        
+                        <!-- User Actions / Profile -->
+                        <div class="flex items-center space-x-4">
+                            <i data-lucide="Search" class="w-5 h-5 text-gray-400 hover:text-white cursor-pointer transition" 
+                                title="Global Search (Mock)"></i>
+                            
+                            <!-- Profile Avatar -->
+                            <div onclick="setPage('profile')" 
+                                 class="w-8 h-8 rounded-full bg-cyan-600 flex items-center justify-center font-bold text-sm cursor-pointer 
+                                        border-2 border-accent hover:shadow-lg transition duration-200"
+                                 title="View Profile - User ID: ${currentUserId}">
+                                ${initials}
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            `;
+        }
+        
+        /**
+         * Renders a standardized, professional container card component.
+         * @param {object} props - The properties for the card.
+         * @param {string} [props.title=''] - The title displayed at the top of the card.
+         * @param {string} [props.icon=''] - The Lucide icon name for the title.
+         * @param {string} [props.content=''] - The main content HTML to inject into the card body.
+         * @param {string} [props.className=''] - Additional Tailwind CSS classes for the card container.
+         * @returns {string} The HTML string for the card.
+         */
+        function renderCard({ title = '', icon = '', content = '', className = '' }) {
+            return `
+                <div class="p-6 rounded-xl bg-card border border-base shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-accent/30 ${className}">
+                    ${title ? `
+                        <!-- Card Header Structure -->
+                        <div class="flex items-center mb-4 border-b border-base/50 pb-3">
+                            <i data-lucide="${icon}" class="w-6 h-6 mr-3 text-accent flex-shrink-0"></i>
+                            <h3 class="text-xl font-bold text-white leading-tight">${title}</h3>
+                        </div>
+                    ` : ''}
+                    <!-- Card Body Content Injection -->
+                    <div class="${title ? 'mt-4' : ''} text-gray-300">
+                        ${content}
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Renders a generic button component with different styling types.
+         * @param {object} props - The properties for the button.
+         * @param {string} props.text - The visible text on the button.
+         * @param {('primary'|'secondary'|'social')} [props.type='primary'] - The button style type.
+         * @param {string} [props.icon=''] - The Lucide icon name to display next to the text.
+         * @param {string} [props.onClick=''] - The JavaScript function call for the click event.
+         * @param {string} [props.className=''] - Additional Tailwind CSS classes.
+         * @returns {string} The HTML string for the button.
+         */
+        function renderButton({ text, type = 'primary', icon = '', onClick = '', className = '' }) {
+            let styleClasses = '';
+            
+            // Determine styles based on type
+            if (type === 'primary') {
+                styleClasses = `btn-primary`;
+            } else if (type === 'secondary') {
+                styleClasses = `btn-secondary`;
+            } else if (type === 'social') {
+                styleClasses = `bg-bg-secondary text-gray-400 border border-base hover:bg-cyan-900/30 hover:text-accent`;
+            }
+
+            return `
+                <button type="button" 
+                        title="${text}"
+                        class="flex items-center justify-center px-4 py-2 rounded-lg font-semibold transition duration-300 active:scale-[0.98] 
+                                focus:outline-none focus:ring-4 focus:ring-cyan-500/50 ${styleClasses} ${className}" 
+                        onclick="${onClick}">
+                    ${icon ? `<i data-lucide="${icon}" class="w-4 h-4 mr-2 flex-shrink-0"></i>` : ''}
+                    ${text}
+                </button>
+            `;
+        }
+
+        /**
+         * Renders a single external link component, styled as an interactive list item.
+         * @param {object} link - The link data object.
+         * @returns {string} The HTML string for the link.
+         */
+        function renderExternalLink({ title, url, description }) {
+            return `
+                <a href="${url}" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   title="Visit ${title}"
+                   class="flex items-center p-3 rounded-lg bg-bg-tertiary hover:bg-bg-primary transition border border-transparent hover:border-accent/50 cursor-pointer shadow-md">
+                    
+                    <i data-lucide="ExternalLink" class="w-5 h-5 text-success flex-shrink-0"></i>
+                    
+                    <div class="ml-4 flex-grow">
+                        <p class="text-white font-semibold text-base leading-snug">${title}</p>
+                        <p class="text-gray-500 text-xs mt-0.5">${description}</p>
+                    </div>
+                    
+                    <i data-lucide="ChevronRight" class="w-5 h-5 text-accent ml-auto flex-shrink-0 opacity-70"></i>
+                </a>
+            `;
+        }
+        
+        /**
+         * Renders a progress bar component for visual display.
+         * @param {number} progress - The percentage value (0-100).
+         * @param {string} colorClass - Tailwind class for the progress bar color (e.g., 'bg-green-500').
+         * @returns {string} The HTML string for the progress bar.
+         */
+        function renderProgressBar(progress, colorClass = 'bg-cyan-500') {
+            const safeProgress = Math.max(0, Math.min(100, progress));
+            return `
+                <div class="w-full bg-gray-700 rounded-full h-2.5 mt-2 overflow-hidden" role="progressbar" aria-valuenow="${safeProgress}" aria-valuemin="0" aria-valuemax="100">
+                    <div class="h-2.5 rounded-full ${colorClass} transition-all duration-700 ease-out" 
+                         style="width: ${safeProgress}%;">
+                    </div>
+                </div>
+            `;
+        }
+
+
+        // -----------------------------------------------------------
+        // 5.6: AUTHENTICATION AND INTERACTION HANDLERS 
+        // -----------------------------------------------------------
+
+        /**
+         * Renders and shows the custom message box.
+         * @param {string} title - The title of the message box.
+         * @param {string} text - The body text of the message.
+         * @param {boolean} [isSuccess=true] - If true, styles the title for success, otherwise for error/warning.
+         * @returns {void}
+         */
+        function showMessageBox(title, text, isSuccess = true) {
+            const messageBoxDiv = document.getElementById('messageBox');
+            const messageTitle = document.getElementById('messageTitle');
+            const messageText = document.getElementById('messageText');
+            
+            messageTitle.textContent = title;
+            messageText.textContent = text;
+
+            // Update title color based on message type
+            messageTitle.classList.remove('text-red-600', 'text-green-600');
+            messageTitle.classList.add(isSuccess ? 'text-green-600' : 'text-red-600');
+            
+            messageBoxDiv.classList.remove('hidden', 'opacity-0');
+            messageBoxDiv.classList.add('flex', 'opacity-100');
+        }
+
+        /**
+         * Closes the custom message box by updating its visibility classes.
+         * @returns {void}
+         */
+        function closeMessageBox() {
+            const messageBoxDiv = document.getElementById('messageBox');
+            messageBoxDiv.classList.remove('flex', 'opacity-100');
+            messageBoxDiv.classList.add('hidden', 'opacity-0');
+        }
+
+        /**
+         * Mock handler for social sign-in buttons.
+         * @param {string} platform - The social media platform name (e.g., 'Google', 'GitHub').
+         * @returns {void}
+         */
+        window.mockSocialLogin = (platform) => {
+            console.log(`-> 5.6.1: Mock sign-in initiated with ${platform}.`);
+            showMessageBox('Sign In Success', `Successfully signed in with ${platform} (Simulated). Redirecting to the main dashboard.`, true);
+            
+            // Log successful authentication attempt to mock DB for tracking
+            mockFirestoreAdd('login_events', { 
+                method: `Social Login (${platform})`, 
+                status: 'Success' 
+            });
+
+            // Simulate the delay of a real authentication redirect
+            setTimeout(() => setPage('dashboard'), 1500);
+        };
+
+        /**
+         * Mock handler for email/password form submission (Login/Signup).
+         * @param {boolean} isLogin - True if submitting a login form, false if signup.
+         * @returns {void}
+         */
+        window.mockAuthSubmit = (isLogin) => {
+            const action = isLogin ? 'Login' : 'Signup';
+            const email = document.getElementById('auth-email')?.value;
+            const password = document.getElementById('auth-password')?.value;
+
+            if (!email || !password) {
+                 showMessageBox('Validation Error', 'Please enter both email and password.', false);
+                 return;
+            }
+
+            if (!isValidEmail(email)) {
+                showMessageBox('Validation Error', 'Please enter a valid email address format.', false);
+                return;
+            }
+
+            console.log(`-> 5.6.2: Attempting ${action} (Mock) with email: ${email}`);
+            showMessageBox(action + ' Successful', `${action} simulation successful! Welcome back, ${email}. Redirecting...`, true);
+            
+            // Log the mock event
+            mockFirestoreAdd('login_events', { 
+                method: `${action} (Email/Pass)`, 
+                email: email,
+                status: 'Success' 
+            });
+
+            setTimeout(() => setPage('dashboard'), 1500);
+        };
+        
+        /**
+         * Mock handler for contact/feedback form submission (Interview Prep page).
+         * @param {Event} event - The form submission event.
+         * @returns {void}
+         */
+        window.handleFeedbackSubmission = (event) => {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            console.log("-> 5.6.3: Handling Feedback Submission:", data);
+
+            // Mock database call
+            mockFirestoreAdd('user_feedback', data);
+
+            showMessageBox(
+                'Feedback Sent',
+                'Thank you for your valuable feedback! We have recorded your submission (Mock DB).',
+                true
+            );
+            form.reset();
+        };
+
+
+        // -----------------------------------------------------------
+        // 5.7: PAGE RENDERING FUNCTIONS (The core application views)
+        // -----------------------------------------------------------
+
+        /**
+         * Renders the initial loading screen while Firebase/Auth is being initialized.
+         * @returns {string} HTML for the loading view.
+         */
+        function renderLoadingPage() {
+            return `
+                <div class="flex flex-col items-center justify-center min-h-screen -mt-16 text-white p-4">
+                    <!-- High-fidelity spinner -->
+                    <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-accent mb-6 shadow-xl"></div>
+                    <p class="text-xl font-medium text-gray-300">
+                        Initializing Ascend Platform...
+                    </p>
+                    <p class="mt-2 text-sm text-gray-500">
+                        Establishing secure connection and retrieving user context.
+                    </p>
+                </div>
+            `;
+        }
+        
+        /**
+         * Renders the user authentication (Login) view.
+         * @returns {string} HTML for the login view.
+         */
+        function renderLoginPage() {
+            const currentUserId = getCurrentUserId();
+            return `
+                <div class="flex items-center justify-center min-h-[calc(100vh-64px)] p-4">
+                    <div class="max-w-md w-full p-8 sm:p-10 rounded-2xl shadow-2xl bg-card border border-base">
+                        <h2 class="text-4xl font-extrabold text-white mb-2 text-center">ASCEND</h2>
+                        <p class="text-center text-gray-400 mb-8">Professional Tech Prep Platform</p>
+
+                        <form class="space-y-5" onsubmit="event.preventDefault(); mockAuthSubmit(true);">
+                            <label for="auth-email" class="block text-sm font-medium text-gray-300">Email Address</label>
+                            <input type="email" id="auth-email" placeholder="e.g., your.name@domain.com" required
+                                class="w-full input-style" />
+                                
+                            <label for="auth-password" class="block text-sm font-medium text-gray-300">Password</label>
+                            <input type="password" id="auth-password" placeholder="Secure Password" required
+                                class="w-full input-style" />
+                                
+                            ${renderButton({ 
+                                text: 'Secure Login to Platform', 
+                                type: 'primary', 
+                                className: 'w-full mt-6', 
+                                onClick: 'mockAuthSubmit(true)' 
+                            })}
+                        </form>
+
+                        <div class="mt-8 text-center border-t border-base pt-8">
+                            <p class="text-gray-400 mb-4">Or use a quick social sign-in option</p>
+                            <div class="grid grid-cols-3 gap-3">
+                                ${renderButton({ text: 'Google', icon: 'Aperture', type: 'social', onClick: "mockSocialLogin('Google')" })}
+                                ${renderButton({ text: 'LinkedIn', icon: 'Linkedin', type: 'social', onClick: "mockSocialLogin('LinkedIn')" })}
+                                ${renderButton({ text: 'GitHub', icon: 'Github', type: 'social', onClick: "mockSocialLogin('GitHub')" })}
+                            </div>
+                            <p class="mt-6 text-xs text-gray-500">
+                                Current Environment ID: <span class="text-accent font-mono text-xs">${appId}</span>
+                            </p>
+                            <p class="mt-1 text-xs text-gray-500">
+                                Current Mock User ID: <span class="text-accent font-mono text-xs">${currentUserId}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Renders the user Dashboard view with analytics and progress tracking.
+         * @returns {string} HTML for the dashboard view.
+         */
+        function renderDashboardPage() {
+            const { userName, userTitle, level, overallProgress, analytics, roadmapModules } = MOCK_DATA;
+            
+            // Helper for rendering a single statistic box
+            const statBox = (value, label, unit, icon) => `
+                <div class="p-4 rounded-xl bg-bg-tertiary border border-base flex flex-col justify-center transition hover:border-accent">
+                    <div class="flex items-center text-gray-400 mb-2">
+                        <i data-lucide="${icon}" class="w-5 h-5 mr-2 text-accent/80"></i>
+                        <p class="text-sm font-medium">${label}</p>
+                    </div>
+                    <p class="text-4xl font-extrabold text-white leading-none">${formatNumber(value, (unit === 'Hrs' || unit === '%') ? 1 : 0)}
+                        <span class="text-lg ml-1 text-gray-500">${unit}</span>
+                    </p>
+                </div>
+            `;
+
+            // Helper for rendering the circular progress visualization
+            const progressCircle = (percentage, size = 140) => {
+                const radius = 45;
+                const circumference = 2 * Math.PI * radius;
+                // Calculate the stroke-dashoffset to show the progress
+                const offset = circumference - (percentage / 100) * circumference;
+
+                return `
+                    <svg width="${size}" height="${size}" viewBox="0 0 100 100" class="transform -rotate-90">
+                        <!-- Background Circle -->
+                        <circle cx="50" cy="50" r="${radius}" fill="none" stroke="var(--color-bg-tertiary)" stroke-width="10" />
+                        <!-- Progress Arc -->
+                        <circle
+                            cx="50" cy="50" r="${radius}" fill="none" stroke="var(--color-accent-main)" stroke-width="8"
+                            stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" stroke-linecap="round"
+                            style="transition: stroke-dashoffset 0.8s ease-in-out;"
+                        />
+                        <!-- Text overlay, rotated back -->
+                        <g class="transform rotate-90" transform="rotate(90 50 50)">
+                            <text x="50" y="45" class="text-3xl font-extrabold fill-white" text-anchor="middle" alignment-baseline="middle">${Math.round(percentage)}%</text>
+                            <text x="50" y="65" class="text-xs fill-gray-400 font-medium" text-anchor="middle" alignment-baseline="middle">Goal Progress</text>
+                        </g>
+                    </svg>
+                `;
+            };
+            
+            // Helper for rendering a single roadmap module card
+            const roadmapModuleCard = (module) => {
+                const isCompleted = module.status === 'Completed';
+                const statusColor = module.status === 'Active' ? 'text-green-400 bg-green-900/50' : 
+                                    module.status === 'Pending' ? 'text-yellow-400 bg-yellow-900/50' : 
+                                    'text-gray-400 bg-gray-700/50';
+
+                return `
+                    <div class="p-4 rounded-xl border border-base bg-bg-tertiary flex flex-col justify-between transition duration-300 hover:border-cyan-600 cursor-pointer">
+                        <div class="flex items-center justify-between mb-3">
+                            <i data-lucide="FlaskConical" class="w-6 h-6 text-accent"></i>
+                            <span class="text-xs font-medium px-3 py-1 rounded-full ${statusColor}">
+                                ${module.status}
+                            </span>
+                        </div>
+                        <h4 class="text-lg font-semibold text-white mb-2">${module.name}</h4>
+                        
+                        ${renderProgressBar(module.progress, module.status === 'Active' ? 'bg-cyan-500' : 'bg-gray-500')}
+                        
+                        <div class="flex justify-between text-sm text-gray-500 mt-2">
+                            <span>${module.completed} / ${module.topics} Topics</span>
+                            <span class="font-semibold text-white">${module.progress}%</span>
+                        </div>
+                    </div>
+                `;
+            };
+
+            const analyticsContent = `
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    ${statBox(analytics.totalHours, "Total Study Hours", "Hrs", "Clock")}
+                    ${statBox(analytics.solvedProblems, "Problems Solved", "P", "CheckCircle")}
+                    ${statBox(analytics.averageAccuracy, "Avg. Accuracy", "%", "TrendingUp")}
+                    ${statBox(analytics.dailyStreak, "Daily Streak", "Days", "Flame")}
+                </div>
+            `;
+            
+            const progressContent = `
+                <div class="flex flex-col items-center justify-center py-4">
+                    ${progressCircle(overallProgress)}
+                    <p class="text-gray-400 mt-4 text-sm">${userTitle}</p>
+                    <p class="text-white font-bold text-lg mt-1">${level}</p>
+                </div>
+            `;
+
+            const roadmapContent = `
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    ${roadmapModules.map(roadmapModuleCard).join('')}
+                </div>
+            `;
+
+
+            return `
+                <div class="max-w-7xl mx-auto">
+                    <h1 class="text-4xl font-extrabold text-white mb-2">Welcome Back, ${userName}!</h1>
+                    <p class="text-lg text-gray-400 mb-8">
+                        Ready to achieve your goal: <span class="text-accent font-semibold">${MOCK_DATA.careerGoal}</span>
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <!-- Overall Progress Card -->
+                        ${renderCard({ 
+                            title: 'Overall Mastery Level', 
+                            icon: 'BarChart3', 
+                            content: progressContent, 
+                            className: 'md:col-span-1' 
+                        })}
+                        
+                        <!-- Quick Analytics Card -->
+                        ${renderCard({ 
+                            title: 'Performance Snapshot (Lifetime)', 
+                            icon: 'Activity', 
+                            content: analyticsContent, 
+                            className: 'md:col-span-3' 
+                        })}
+                    </div>
+                    
+                    <!-- Roadmap Card -->
+                    ${renderCard({ 
+                        title: 'Technical Roadmap Progress', 
+                        icon: 'Map', 
+                        content: roadmapContent, 
+                        className: 'mb-8' 
+                    })}
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row justify-center mt-6 space-y-4 sm:space-y-0 sm:space-x-4">
+                        ${renderButton({ 
+                            text: 'Start Coding Session', 
+                            icon: 'Code', 
+                            type: 'primary', 
+                            className: 'px-8 py-3',
+                            onClick: "setPage('coding_arena')" 
+                        })}
+                        ${renderButton({ 
+                            text: 'Schedule Mock Interview', 
+                            icon: 'Users', 
+                            type: 'secondary', 
+                            className: 'px-8 py-3',
+                            onClick: "setPage('interview_prep')" 
+                        })}
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Renders the Coding Arena view with problems and external links.
+         * @returns {string} HTML for the coding arena view.
+         */
+        function renderCodingArenaPage() {
+            const problemListContent = MOCK_DATA.codingProblems.map(problem => {
+                const difficultyClass = problem.difficulty === 'Easy' ? 'bg-green-600/50 text-green-300' : 
+                                        problem.difficulty === 'Medium' ? 'bg-yellow-600/50 text-yellow-300' : 'bg-red-600/50 text-red-300';
+                const statusIcon = problem.status === 'Completed' ? 'Check' : problem.status === 'Attempted' ? 'Minus' : 'Circle';
+                
+                return `
+                    <div class="p-3 rounded-lg cursor-pointer transition duration-200 border bg-bg-tertiary border-base hover:bg-bg-primary hover:border-accent/50"
+                         title="Last Attempt: ${formatDate(problem.last_attempt || new Date().toISOString())}">
+                        <div class="flex items-center justify-between">
+                            <p class="font-semibold text-gray-300 flex items-center">
+                                <i data-lucide="${statusIcon}" class="w-4 h-4 mr-2 ${problem.status === 'Completed' ? 'text-success' : 'text-gray-500'}"></i>
+                                ${problem.title}
+                            </p>
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full text-white ${difficultyClass}">
+                                ${problem.difficulty}
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1 pl-6">
+                            Primary Topic: ${problem.topic}
+                        </p>
+                    </div>
+                `;
+            }).join('');
+
+            const externalCodingLinks = EXTERNAL_LINKS.coding.map(renderExternalLink).join('');
+            const externalTutorialLinks = EXTERNAL_LINKS.tutorials.map(renderExternalLink).join('');
+            
+            const editorContent = `
+                <h2 class="text-2xl font-bold text-white mb-4">Code Editor Interface (Simulated)</h2>
+                <p class="text-gray-400 mb-6">Start working on your selected problem or use the integrated scratchpad below.</p>
+                
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-semibold text-accent flex items-center">
+                            <i data-lucide="Terminal" class="w-5 h-5 mr-2 text-indigo-400"></i> Scratchpad
+                        </h3>
+                        <div class="flex space-x-2">
+                            <select class="p-1.5 text-sm rounded-lg bg-bg-tertiary border border-base text-gray-300">
+                                <option>Python 3</option>
+                                <option>Java</option>
+                                <option>C++</option>
+                                <option>JavaScript</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <textarea class="w-full p-4 h-96 font-mono text-sm rounded-xl bg-[#0D1117] text-gray-300 border border-base focus:border-accent resize-none transition"
+                        placeholder="// Write your main function or scratchpad code here..."
+                    >
+// Example function: Fibonacci Sequence
+function fibonacci(n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+console.log("Fib(10):", fibonacci(10)); // Output: 55</textarea>
+                </div>
+                
+                <div class="flex space-x-4 justify-end border-t border-base pt-4">
+                    ${renderButton({ text: 'Run Test Cases (Mock)', icon: 'Play', type: 'secondary', onClick: "showMessageBox('Running Tests', 'Compiling and executing test cases... (Simulated success)', true)", className: 'text-sm px-6 py-2' })}
+                    ${renderButton({ text: 'Submit Solution (Mock)', icon: 'Check', type: 'primary', onClick: "showMessageBox('Submission', 'Solution submitted for evaluation. Awaiting score... (Mock)', true)", className: 'text-sm px-6 py-2' })}
+                </div>
+            `;
+
+            return `
+                <div class="max-w-7xl mx-auto">
+                    <h1 class="text-4xl font-extrabold text-white mb-8 flex items-center">
+                        <i data-lucide="CodeSquare" class="w-8 h-8 mr-3 text-accent"></i> Coding Arena: Deep Dive
+                    </h1>
+                    
+                    <div class="grid lg:grid-cols-12 gap-6">
+                        
+                        <!-- Left Column: Resources and Problem List -->
+                        <div class="lg:col-span-4 xl:col-span-3 space-y-6">
+                            
+                            <!-- External Practice Links -->
+                            ${renderCard({ 
+                                title: 'Top Practice Platforms', 
+                                icon: 'ExternalLink', 
+                                content: externalCodingLinks 
+                            })}
+                            
+                            <!-- Learning Links -->
+                            ${renderCard({ 
+                                title: 'Learning & Tutorials', 
+                                icon: 'BookOpen', 
+                                content: externalTutorialLinks 
+                            })}
+
+                            <!-- Active Problem Set -->
+                            ${renderCard({ 
+                                title: 'Recent Problem History', 
+                                icon: 'ListOrdered', 
+                                content: `<div class="space-y-3">${problemListContent}</div>`
+                            })}
+                        </div>
+                        
+                        <!-- Right Column: Code Editor -->
+                        <div class="lg:col-span-8 xl:col-span-9">
+                            ${renderCard({ content: editorContent, className: 'h-full' })}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        /**
+         * Renders the Interview Preparation view.
+         * @returns {string} HTML for the interview prep view.
+         */
+        function renderInterviewPrepPage() {
+            
+            const slotListContent = MOCK_DATA.interviewSlots.map(slot => {
+                const statusIcon = slot.status === 'Scheduled' ? 'CalendarClock' : 
+                                   slot.status === 'Pending' ? 'Loader' : 'Trophy';
+                const statusColor = slot.status === 'Scheduled' ? 'bg-blue-600/50 text-blue-300' : 
+                                    slot.status === 'Pending' ? 'bg-yellow-600/50 text-yellow-300' : 'bg-green-600/50 text-green-300';
+                
+                const actionButton = slot.status === 'Scheduled' 
+                    ? renderButton({ 
+                        text: 'Join Now', 
+                        type: 'primary', 
+                        icon: 'Video', 
+                        className: 'text-xs px-3 py-1', 
+                        onClick: "showMessageBox('Joining Session', 'Connecting to secure mock interview room...', true)"
+                      })
+                    : (slot.rating ? `<span class="text-sm font-semibold text-white bg-green-800/50 px-3 py-1 rounded-full">Rating: ${slot.rating} ⭐</span>` : '');
+
+                return `
+                    <div class="p-4 rounded-xl border border-base bg-bg-tertiary flex flex-col justify-between transition duration-200 hover:border-accent/50">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="font-semibold text-white flex items-center">
+                                <i data-lucide="${statusIcon}" class="w-5 h-5 mr-2 text-accent"></i>
+                                ${slot.company} (${slot.type})
+                            </p>
+                            <span class="text-xs font-semibold px-3 py-1 rounded-full ${statusColor}">${slot.status}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm text-gray-400">
+                            <span>${formatDate(slot.date)} at ${slot.time}</span>
+                            ${actionButton}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const externalPrepLinks = EXTERNAL_LINKS.interview.map(renderExternalLink).join('');
+
+            const feedbackFormContent = `
+                <h3 class="text-xl font-bold text-white mb-4">Send Us Your Interview Feedback</h3>
+                <p class="text-gray-400 mb-6 text-sm">Help us improve the preparation experience by sharing your recent mock or real interview details.</p>
+                <form onsubmit="handleFeedbackSubmission(event)" class="space-y-4">
+                    
+                    <label for="feedback-type" class="block text-sm font-medium text-gray-300">Interview Type</label>
+                    <select id="feedback-type" name="type" required class="w-full input-style">
+                        <option value="Mock">Mock Interview</option>
+                        <option value="Real">Real Company Interview</option>
+                    </select>
+
+                    <label for="feedback-company" class="block text-sm font-medium text-gray-300">Company Name (or Mock Topic)</label>
+                    <input type="text" id="feedback-company" name="company" placeholder="e.g., Google or System Design" required class="w-full input-style" />
+
+                    <label for="feedback-details" class="block text-sm font-medium text-gray-300">Key Takeaways / Questions Asked</label>
+                    <textarea id="feedback-details" name="details" rows="5" placeholder="Share specific questions or general feedback..." required class="w-full input-style resize-none"></textarea>
+                    
+                    ${renderButton({ text: 'Submit Anonymous Feedback', icon: 'Send', type: 'primary', className: 'w-full mt-6 px-6 py-3', onClick: '' })}
+                </form>
+            `;
+
+            return `
+                <div class="max-w-7xl mx-auto">
+                    <h1 class="text-4xl font-extrabold text-white mb-8 flex items-center">
+                        <i data-lucide="MonitorPlay" class="w-8 h-8 mr-3 text-accent"></i> Interview Preparation Hub
+                    </h1>
+
+                    <div class="grid lg:grid-cols-12 gap-6">
+                        
+                        <!-- Left Column: Upcoming and Booking -->
+                        <div class="lg:col-span-5 space-y-6">
+                            
+                            ${renderCard({ 
+                                title: 'Upcoming & Recent Sessions', 
+                                icon: 'Calendar', 
+                                content: `<div class="space-y-3">${slotListContent}</div>`
+                            })}
+
+                            ${renderCard({ 
+                                title: 'Feedback & Improvement', 
+                                icon: 'MessageSquare', 
+                                content: feedbackFormContent 
+                            })}
+                        </div>
+                        
+                        <!-- Right Column: Resources and Tools -->
+                        <div class="lg:col-span-7 space-y-6">
+                            
+                            ${renderCard({ 
+                                title: 'External Prep Resources', 
+                                icon: 'Globe', 
+                                content: `<div class="space-y-3">${externalPrepLinks}</div>`
+                            })}
+                            
+                            <!-- Detailed Section for Behavioral/HR Prep -->
+                            ${renderCard({ 
+                                title: 'Behavioral Prep & Star Method', 
+                                icon: 'Feather', 
+                                content: `
+                                    <p class="mb-4 text-gray-400">Master the STAR method for answering behavioral questions effectively (Situation, Task, Action, Result).</p>
+                                    <ul class="list-disc list-inside space-y-2 pl-4 text-sm text-gray-300">
+                                        <li><span class="font-semibold text-accent">S</span>ituation: Set the scene and provide necessary details.</li>
+                                        <li><span class="font-semibold text-accent">T</span>ask: Describe your responsibility in that situation.</li>
+                                        <li><span class="font-semibold text-accent">A</span>ction: Explain exactly what steps you took to address it.</li>
+                                        <li><span class="font-semibold text-accent">R</span>esult: Conclude with the outcome and what you learned.</li>
+                                    </ul>
+                                    ${renderButton({ text: 'Practice Common Questions', type: 'secondary', icon: 'Mic', className: 'mt-6 text-sm px-4 py-2', onClick: "showMessageBox('Behavioral Practice', 'Launching mock behavioral questions interface (Simulated).', true)" })}
+                                `
+                            })}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Renders the User Profile view.
+         * @returns {string} HTML for the profile view.
+         */
+        function renderProfilePage() {
+            const currentUserId = getCurrentUserId();
+            const displayName = MOCK_DATA.userName;
+            const initials = displayName.split(' ').map(n => n[0]).join('');
+
+            return `
+                <div class="max-w-4xl mx-auto">
+                    <h1 class="text-4xl font-extrabold text-white mb-8 flex items-center">
+                        <i data-lucide="UserCircle" class="w-8 h-8 mr-3 text-accent"></i> User Profile & Account Settings
+                    </h1>
+
+                    ${renderCard({ 
+                        title: 'Personal Information',
+                        icon: 'Contact',
+                        content: `
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-8 mb-8 border-b border-base pb-6">
+                                
+                                <!-- Profile Picture / Initials -->
+                                <div class="w-24 h-24 rounded-full bg-cyan-600 flex items-center justify-center text-4xl font-bold text-white border-4 border-accent shadow-lg flex-shrink-0">
+                                    ${initials}
+                                </div>
+                                
+                                <!-- User Details -->
+                                <div class="flex-grow">
+                                    <h2 class="text-3xl font-bold text-white">${displayName}</h2>
+                                    <p class="text-xl text-gray-400">${MOCK_DATA.userTitle}</p>
+                                    <p class="mt-2 text-sm text-gray-500">
+                                        Unique User Identifier (UID): <span class="font-mono text-xs text-accent">${currentUserId}</span>
+                                    </p>
+                                </div>
+                                
+                                <!-- Action Button -->
+                                ${renderButton({ 
+                                    text: 'Update Info (Mock)', 
+                                    icon: 'Pencil', 
+                                    type: 'secondary', 
+                                    className: 'text-sm px-4 py-2', 
+                                    onClick: "showMessageBox('Profile Update', 'Profile editing interface is simulated (No changes saved).', true)" 
+                                })}
+                            </div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-300">
+                                <!-- Contact Details -->
+                                <div class="space-y-4">
+                                    <p class="pb-2 border-b border-base"><i data-lucide="Mail" class="w-4 h-4 mr-2 inline text-cyan-400"></i> Email: <span class="text-white font-medium">alex.johnson@example.com</span></p>
+                                    <p class="pb-2 border-b border-base"><i data-lucide="Phone" class="w-4 h-4 mr-2 inline text-cyan-400"></i> Phone: <span class="text-white font-medium">+91 98765 43210 (Mock)</span></p>
+                                </div>
+                                <!-- Career Details -->
+                                <div class="space-y-4">
+                                    <p class="pb-2 border-b border-base"><i data-lucide="Target" class="w-4 h-4 mr-2 inline text-cyan-400"></i> Career Goal: <span class="text-white font-medium">${MOCK_DATA.careerGoal}</span></p>
+                                    <p class="pb-2 border-b border-base"><i data-lucide="Award" class="w-4 h-4 mr-2 inline text-cyan-400"></i> Current Level: <span class="text-white font-medium">${MOCK_DATA.level}</span></p>
+                                </div>
+                            </div>
+                        `
+                    })}
+
+                    <div class="mt-8 space-y-6">
+                        ${renderCard({ 
+                            title: 'Security & Account Management',
+                            icon: 'Shield',
+                            content: `
+                                <div class="space-y-4">
+                                    <!-- Two Factor Auth -->
+                                    <div class="flex justify-between items-center p-3 rounded-lg bg-bg-tertiary border border-base hover:border-red-600/50">
+                                        <div><p class="text-white font-semibold">Two-Factor Authentication (2FA)</p><p class="text-gray-500 text-sm">Add an extra layer of security to your account.</p></div>
+                                        ${renderButton({ text: 'Enable 2FA (Mock)', type: 'secondary', className: 'text-sm px-4 py-1 border-red-600 text-red-400 hover:bg-red-900/20' })}
+                                    </div>
+                                    <!-- Password Change -->
+                                    <div class="flex justify-between items-center p-3 rounded-lg bg-bg-tertiary border border-base hover:border-accent/50">
+                                        <div><p class="text-white font-semibold">Change Password</p><p class="text-gray-500 text-sm">Update your secure login credential.</p></div>
+                                        ${renderButton({ text: 'Change Password (Mock)', type: 'secondary', className: 'text-sm px-4 py-1' })}
+                                    </div>
+                                    <!-- Logout All Sessions -->
+                                    <div class="flex justify-between items-center p-3 rounded-lg bg-bg-tertiary border border-base hover:border-red-600/50">
+                                        <div><p class="text-white font-semibold">Logout All Sessions</p><p class="text-gray-500 text-sm">Sign out of all devices immediately.</p></div>
+                                        ${renderButton({ text: 'Logout All (Mock)', icon: 'LogOut', type: 'primary', className: 'text-sm px-4 py-1 bg-red-600 hover:bg-red-700', onClick: "setPage('login')" })}
+                                    </div>
+                                </div>
+                            `
+                        })}
+                    </div>
+                </div>
+            `;
+        }
+
+        // -----------------------------------------------------------
+        // 5.8: INITIALIZATION BOOTSTRAP
+        // -----------------------------------------------------------
+
+        /**
+         * The application bootstrap function.
+         * Runs once the DOM structure is fully loaded.
+         * @returns {void}
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("-> 5.8.1: DOMContentLoaded event fired. Starting application bootstrap.");
+            
+            // Set initial page state to 'loading'
+            setPage('loading'); 
+            
+            // Start the asynchronous Firebase initialization process
+            initializeFirebase();
+        });
+
+    </script>
+</body>
+</html>
