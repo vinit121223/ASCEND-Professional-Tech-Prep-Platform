@@ -1,4 +1,4 @@
-🎓 AI-Powered E-Learning Platform
+🎓 ASCEND PROFESSIONAL TECH PREP PLATFORM 
 
 A modern AI-driven e-learning platform built for B.Tech engineering students.
 This project provides personalized learning paths, coding practice, AI tutoring, and progress tracking — designed to help students learn smarter and faster.
